@@ -4,14 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
+using myproj.Authorization.Users;
 
 namespace myproj.Projects
 {
     [Table("Projects")]
-    public class Project : Entity, IHasCreationTime
+    public class Project : Entity<long>, IHasCreationTime
     {
         public const int MaxTitleLength = 256;
         public const int MaxDescriptionLength = 64 * 1024; //64KB
+        
+        [ForeignKey("AssignedUserId")]
+        public virtual User AssignedUser { get; set; }
+
+        public virtual long? AssignedUserId { get; set; }
 
         [Required]
         [StringLength(MaxTitleLength)]
