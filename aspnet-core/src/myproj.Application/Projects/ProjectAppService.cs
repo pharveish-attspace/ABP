@@ -7,9 +7,20 @@ using myproj.Projects.Dto;
 using myproj.Core.Repositories.Projects;
 using Abp.AutoMapper;
 using Abp.Application.Services.Dto;
+using Abp.Application.Services;
+using Abp.Application.Services.Dto;
+using Abp.Authorization;
+using Abp.Domain.Repositories;
+using Abp.Extensions;
+using Abp.IdentityFramework;
+using Abp.Linq.Extensions;
+using myproj.Authorization;
+using myproj.Authorization.Roles;
+using myproj.Authorization.Users;
 
 namespace myproj.Projects
 {
+    [AbpAuthorize(PermissionNames.Pages_Roles)]
     public class ProjectAppService : ApplicationService, IProjectAppService
     {
        private readonly IProjectRepository _projectRepository;
