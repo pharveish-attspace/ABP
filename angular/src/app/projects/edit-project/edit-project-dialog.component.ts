@@ -10,8 +10,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
   ProjectServiceProxy,
-  ProjectDto,
-  GetProjectsOutput
+  ProjectDto
 } from '@shared/service-proxies/service-proxies';
 
 @Component({
@@ -35,8 +34,8 @@ export class EditProjectDialogComponent extends AppComponentBase
   }
 
   ngOnInit(): void {
-    this._projectService.getProjects(this.id,null).subscribe((result: GetProjectsOutput) => {
-      this.project = result.projects[0] ?? null;
+    this._projectService.get(this.id).subscribe((result: ProjectDto) => {
+      this.project = result;
       this.cd.detectChanges();
     });
   }

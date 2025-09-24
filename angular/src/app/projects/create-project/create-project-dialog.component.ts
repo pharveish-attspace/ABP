@@ -9,7 +9,7 @@ import {
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { AppComponentBase } from '@shared/app-component-base';
 import {
-  CreateProjectInput,
+  ProjectDto,
   ProjectServiceProxy
 } from '@shared/service-proxies/service-proxies';
 
@@ -19,7 +19,7 @@ import {
 export class CreateProjectDialogComponent extends AppComponentBase
   implements OnInit {
   saving = false;
-  project: CreateProjectInput = new CreateProjectInput();
+  project: ProjectDto = new ProjectDto();
 
   @Output() onSave = new EventEmitter<any>();
 
@@ -33,7 +33,6 @@ export class CreateProjectDialogComponent extends AppComponentBase
   }
 
   ngOnInit(): void {
-    //this.project.isActive = true;
     this.cd.detectChanges();
   }
 

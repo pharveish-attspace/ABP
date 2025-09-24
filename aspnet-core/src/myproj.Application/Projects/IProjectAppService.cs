@@ -8,13 +8,7 @@ using Abp.Application.Services.Dto;
 
 namespace myproj.Projects
 {
-    public interface IProjectAppService : IApplicationService
+    public interface IProjectAppService : IAsyncCrudAppService< ProjectDto, long, PagedProjectResultRequestDto, CreateProjectDto, ProjectDto>
     {
-        GetProjectsOutput GetProjects(GetProjectsInput input);
-        Task<ProjectDto> CreateAsync(CreateProjectInput input);
-        Task<ProjectDto> UpdateAsync(UpdateProjectInput input);
-        Task DeleteAsync(EntityDto<long> input);
-
-
     }
 }

@@ -8,15 +8,14 @@ import {
 } from '@shared/paged-listing-component-base';
 import {
   ProjectServiceProxy,
-  ProjectDto,
-  GetProjectsOutput,
+  ProjectDto
 } from '@shared/service-proxies/service-proxies';
 import { CreateProjectDialogComponent } from './create-project/create-project-dialog.component';
 import { EditProjectDialogComponent } from './edit-project/edit-project-dialog.component';
 
 class PagedProjectsRequestDto extends PagedRequestDto {
   keyword: string;
-  isActive: boolean | null;
+  // isActive: boolean | null;
 }
 
 @Component({
@@ -26,7 +25,6 @@ class PagedProjectsRequestDto extends PagedRequestDto {
 export class ProjectsComponent extends PagedListingComponentBase<ProjectDto> {
   projects: ProjectDto[] = [];
   keyword = '';
-  isActive: boolean | null;
   advancedFiltersVisible = false;
 
   constructor(
@@ -44,18 +42,18 @@ export class ProjectsComponent extends PagedListingComponentBase<ProjectDto> {
     finishedCallback: Function
   ): void {
     request.keyword = this.keyword;
-    request.isActive = this.isActive;
 
     this._projectService
-      .getProjects(null,null)
+      .getAll(request.keyword,request.skipCount,request.maxResultCount)
       .pipe(
         finalize(() => {
           finishedCallback();
         })
       )
-      .subscribe((result: GetProjectsOutput) => {
-        this.projects = result.projects;
-        //this.showPaging(result, pageNumber);
+      .subscribe((result) => {
+        this.projects = result.items;
+        this.showPaging(result, pageNumber);
+        this.cd.detectChanges();
       });
   }
 
@@ -115,7 +113,6 @@ export class ProjectsComponent extends PagedListingComponentBase<ProjectDto> {
 
   clearFilters(): void {
     this.keyword = '';
-    this.isActive = undefined;
     this.getDataPage(1);
   }
 }
