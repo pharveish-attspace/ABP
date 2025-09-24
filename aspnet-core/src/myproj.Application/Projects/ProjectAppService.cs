@@ -1,67 +1,33 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Abp.Application.Services;
 using myproj.Projects.Dto;
-using myproj.Core.Repositories.Projects;
-using Abp.AutoMapper;
-using Abp.Application.Services.Dto;
+using Abp.Domain.Repositories;
+using System.Linq;
+using Abp.Linq.Extensions;
+using Abp.Extensions;
+using System.Threading.Tasks;
 
 namespace myproj.Projects
 {
-    public class ProjectAppService : ApplicationService, IProjectAppService
+    // [AbpAuthorize(PermissionNames.Pages_Projects)]
+    public class ProjectAppService : AsyncCrudAppService<Project, ProjectDto, long, PagedProjectResultRequestDto, CreateProjectDto, ProjectDto>, IProjectAppService
     {
-       private readonly IProjectRepository _projectRepository;
 
-       public ProjectAppService(IProjectRepository projectRepository)
-       {
-            _projectRepository = projectRepository;
-       }
-
-        public GetProjectsOutput GetProjects(GetProjectsInput input)
+        public ProjectAppService(IRepository<Project, long> repository) : base(repository)
         {
-            //Called specific GetAllWithPeople method of task repository.
-            var tasks = _projectRepository.GetAllWithPeople(input.AssignedUserId, input.State);
-
-            //Used AutoMapper to automatically convert List<Task> to List<TaskDto>.
-            return new GetProjectsOutput
-            {
-                Projects = ObjectMapper.Map<List<ProjectDto>>(tasks)
-            };
-        }
-        
-        public async Task<ProjectDto> CreateAsync(CreateProjectInput input)
-        {
-            var project = new Project(input.Title, input.Description)
-            {
-                AssignedUserId = input.AssignedUserId
-            };
-
-            project = await _projectRepository.InsertAsync(project);
-            return project.MapTo<ProjectDto>();
-
+            
         }
 
-        public async Task<ProjectDto> UpdateAsync(UpdateProjectInput input)
+        public override Task<ProjectDto> UpdateAsync(ProjectDto input)
         {
-            var project = await _projectRepository.GetAsync(input.Id);
-
-            project.Title = input.Title;
-            project.Description = input.Description;
-            project.AssignedUserId = input.AssignedUserId;
-            project.State = input.State;
-
-            project = await _projectRepository.UpdateAsync(project);
-            return project.MapTo<ProjectDto>();
-
+            return base.UpdateAsync(input);
         }
 
-        public async Task DeleteAsync(EntityDto<long> input)
+        protected override IQueryable<Project> CreateFilteredQuery(PagedProjectResultRequestDto input)
         {
-            await _projectRepository.DeleteAsync(input.Id);
+            return Repository.GetAll()
+                .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.Title.Contains(input.Keyword)
+                || x.Description.Contains(input.Keyword));
         }
-
 
     }
 }
