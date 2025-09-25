@@ -15,7 +15,6 @@ import { EditProjectDialogComponent } from './edit-project/edit-project-dialog.c
 
 class PagedProjectsRequestDto extends PagedRequestDto {
   keyword: string;
-  // isActive: boolean | null;
 }
 
 @Component({
