@@ -5,21 +5,18 @@ using System.Linq;
 using Abp.Linq.Extensions;
 using Abp.Extensions;
 using System.Threading.Tasks;
+using Abp.Authorization;
+using myproj.Authorization;
 
 namespace myproj.Projects
 {
-    // [AbpAuthorize(PermissionNames.Pages_Projects)]
-    public class ProjectAppService : AsyncCrudAppService<Project, ProjectDto, long, PagedProjectResultRequestDto, CreateProjectDto, ProjectDto>, IProjectAppService
+    [AbpAuthorize(PermissionNames.Pages_Projects)]
+    public class ProjectAppService : AsyncCrudAppService<Project, ProjectDto, long, PagedProjectResultRequestDto, CreateProjectDto, ProjectDto>
     {
 
         public ProjectAppService(IRepository<Project, long> repository) : base(repository)
         {
             
-        }
-
-        public override Task<ProjectDto> UpdateAsync(ProjectDto input)
-        {
-            return base.UpdateAsync(input);
         }
 
         protected override IQueryable<Project> CreateFilteredQuery(PagedProjectResultRequestDto input)
